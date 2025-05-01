@@ -6,14 +6,14 @@ ROS2也使用DDS作为通讯工具，因此Go2、B2和H1机器人的底层可以
 # 环境配置
 ## 系统要求
 测试过的系统和ros2版本
-|系统|ros2 版本|
-|--|--|
-|Ubuntu 20.04|foxy|
-|Ubuntu 22.04|humble|
+| 系统         | ros2 版本 |
+| ------------ | --------- |
+| Ubuntu 20.04 | humble    |
+| Ubuntu 22.04 | humble    |
 
-以下以ros2 foxy为例，如需要其他版本的ros2，在相应的地方替换foxy为当前的ros2版本名称即可：
+以下以ros2 humble为例，如需要其他版本的ros2，在相应的地方替换humble为当前的ros2版本名称即可：
 
-ROS2 foxy的安装可参考: https://docs.ros.org/en/foxy/Installation/Ubuntu-Install-Debians.html
+ROS2 humble的安装可参考: https://docs.ros.org/en/humble/Installation/Ubuntu-Install-Debians.html
 
 ctrl+alt+T打开终端，克隆仓库：https://github.com/unitreerobotics/unitree_ros2
 ```bash
@@ -29,28 +29,28 @@ git clone https://github.com/unitreerobotics/unitree_ros2
 ### 1. 安装依赖
 
 ```bash
-sudo apt install ros-foxy-rmw-cyclonedds-cpp
-sudo apt install ros-foxy-rosidl-generator-dds-idl
+sudo apt install ros-humble-rmw-cyclonedds-cpp
+sudo apt install ros-humble-rosidl-generator-dds-idl
 ```
 ### 2. 编译cyclone-dds
-由于 Unitree 机器人(sdk2 版本) 使用的是cyclonedds 0.10.2，因此需要先更改ROS2的dds实现。见：https://docs.ros.org/en/foxy/Concepts/About-Different-Middleware-Vendors.html
+由于 Unitree 机器人(sdk2 版本) 使用的是cyclonedds 0.10.2，因此需要先更改ROS2的dds实现。见：https://docs.ros.org/en/humble/Concepts/About-Different-Middleware-Vendors.html
 
-编译cyclonedds前请确保在启动终端时**没有**自动source ros2相关的环境变量，否则会导致cyclonedds编译报错。如果安装ROS2时在~/.bashrc中添加了 " source /opt/ros/foxy/setup.bash "，需要修改 ~/.bashrc 文件将其删除：
+编译cyclonedds前请确保在启动终端时**没有**自动source ros2相关的环境变量，否则会导致cyclonedds编译报错。如果安装ROS2时在~/.bashrc中添加了 " source /opt/ros/humble/setup.bash "，需要修改 ~/.bashrc 文件将其删除：
 
 ```bash
 sudo apt install gedit
 sudo gedit ~/.bashrc
-``` 
+```
 在弹出的窗口中，注释掉ros2相关的环境变量，例如：
 ```bash
-# source /opt/ros/foxy/setup.bash 
+# source /opt/ros/humble/setup.bash
 ```
 在终端中执行以下操作编译cyclone-dds
 ```bash
 cd ~/unitree_ros2/cyclonedds_ws/src
 #克隆cyclonedds仓库
-git clone https://github.com/ros2/rmw_cyclonedds -b foxy
-git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x 
+git clone https://github.com/ros2/rmw_cyclonedds -b humble
+git clone https://github.com/eclipse-cyclonedds/cyclonedds -b releases/0.10.x
 cd ..
 colcon build --packages-select cyclonedds #编译cyclonedds
 ```
@@ -61,14 +61,14 @@ colcon build --packages-select cyclonedds #编译cyclonedds
 编译好 cyclone-dds 后就需要 ros2 相关的依赖来完成 Unitree 功能包的编译，因此编译前需要先 source ROS2 的环境变量。
 
 ```bash
-source /opt/ros/foxy/setup.bash #source ROS2 环境变量
+source /opt/ros/humble/setup.bash #source ROS2 环境变量
 colcon build #编译工作空间下的所有功能包
 ```
 
 
 ## 连接到机器人
 
-### 1. 配置网络 
+### 1. 配置网络
 
 使用网线连接 Unitree 机器人和计算机，使用 ifconfig 查看网络信息，确认机器人连接到的以太网网卡。（例如如图中的enp3s0，以实际为准）
 ![image](https://alidocs.oss-cn-zhangjiakou.aliyuncs.com/res/W4j6OJ2awDgbO3p8/img/5d22c143-5dad-4964-81f3-55864906a9f0.png)
@@ -85,7 +85,7 @@ bash 的内容如下：
 ```bash
 #!/bin/bash
 echo "Setup unitree ros2 environment"
-source /opt/ros/foxy/setup.bash
+source /opt/ros/humble/setup.bash
 source $HOME/unitree_ros2/cyclonedds_ws/install/setup.bash
 export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp
 export CYCLONEDDS_URI='<CycloneDDS><Domain><General><Interfaces>
@@ -110,9 +110,9 @@ source ~/unitree_ros2/setup_default.sh # 不指定网卡
 
 
 
-### 2. 连接测试 
+### 2. 连接测试
 完成上述配置后，建议重启一下电脑再进行测试。
-确保机器人连接正确，打开终端输入: 
+确保机器人连接正确，打开终端输入:
 ```bash
 source ~/unitree_ros2/setup.sh
 ros2 topic list
@@ -133,7 +133,7 @@ colcon build
 ```
 编译完成后在终端中运行:
 ```bash
-./install/unitree_ros2_example/bin/read_motion_state 
+./install/unitree_ros2_example/bin/read_motion_state
 ```
 可以看到终端中输出的机器人状态信息：
 ```bash
@@ -177,11 +177,11 @@ float32 progress //是否动作执行状态：0. dance false; 1. dance true
 uint8 gait_type //步态类型
 /*
 步态类型
-0.idle  
-1.trot  
-2.run  
-3.climb stair  
-4.forwardDownStair   
+0.idle
+1.trot
+2.run
+3.climb stair
+4.forwardDownStair
 9.adjust
 */
 float32 foot_raise_height //抬腿高度
@@ -189,7 +189,7 @@ float32[3] position //当前位置
 float32 body_height //机体高度
 float32[3] velocity //线速度
 float32 yaw_speed //偏行速度
-float32[4] range_obstacle //障碍物范围 
+float32[4] range_obstacle //障碍物范围
 int16[4] foot_force //足端力数值
 float32[12] foot_position_body //足端相对于机体的位置
 float32[12] foot_speed_body //足端相对于机体的速度
@@ -222,7 +222,7 @@ int8 temperature_ntc1
 int8 temperature_ntc2
 float32 power_v //电池电压
 float32 power_a //电池电流
-uint16[4] fan_frequency 
+uint16[4] fan_frequency
 uint32 reserve
 uint32 crc
 ```
